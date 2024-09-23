@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 import './App.css';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
+  
+  const [contacts, setContacts] = useState(() => {
+    const savedContacts = localStorage.getItem('contacts');
+    return savedContacts ? JSON.parse(savedContacts) : [];
+  });
+
   const [editingContact, setEditingContact] = useState(null);
+
+  
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   const addContact = (contact) => {
     if (editingContact) {
@@ -30,8 +40,6 @@ function App() {
 
   return (
     <div className="app">
-
-    
       <h1>Simple Contacts Manager</h1>
       <ContactForm onSubmit={addContact} editingContact={editingContact} />
       <ContactList contacts={contacts} onDelete={deleteContact} onEdit={editContact} />
@@ -40,4 +48,6 @@ function App() {
 }
 
 export default App;
+
+/* Add local store e user effect e corrigir erro de carregamento */
 
